@@ -5,6 +5,13 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     [SerializeField] float posLimit = 18.5f;
+    
+    private Rigidbody ballRb;
+
+    private void Start()
+    {
+        ballRb = GetComponent<Rigidbody>();
+    }
     void Update()
     {
         ConstrainBall();
@@ -19,4 +26,13 @@ public class Ball : MonoBehaviour
         transform.position = pos;
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy") && ballRb.velocity.magnitude>0.5)
+        {
+            Destroy(collision.gameObject);
+        }
+    }
+
+    
 }

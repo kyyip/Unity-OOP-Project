@@ -6,26 +6,76 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] GameObject dodgeBall;
     [SerializeField] GameObject reticle;
-    [SerializeField] float moveSpeed = 40f;
+    [SerializeField] float moveSpeedMax = 80f;
     [SerializeField] float throwForce = 100f;
-    [SerializeField] float rotateSpeed = 10f;
+    [SerializeField] float rotateSpeedMax = 20f;
 
     private int balls = 1;
+    private float moveSpeed;
+    private float rotateSpeed;
 
+    public static PlayerMovement Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     public int Balls
     {
         get { return balls; }
-        set { if (value > 0)
+        set { if (value >= 0)
             {
                 balls = value;
             } 
         }
     }
+
+    public float MoveSpeed
+    {
+        get { return moveSpeed; }
+        set
+        {
+            if (value >= 0)
+            {
+                moveSpeed = value;
+                if (moveSpeed > moveSpeedMax)
+                {
+                    moveSpeed = moveSpeedMax;
+                }
+            }
+        }
+    }
+
+    public float RotateSpeed
+    {
+        get { return rotateSpeed; }
+        set
+        {
+            if (value >= 0)
+            {
+                rotateSpeed = value;
+                if (rotateSpeed > rotateSpeedMax)
+                {
+                    rotateSpeed = rotateSpeedMax;
+                }
+            }
+        }
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        MoveSpeed = moveSpeedMax / 2;
+        RotateSpeed = rotateSpeedMax / 2;
     }
 
     // Update is called once per frame
@@ -51,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void ThrowBall()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && balls > 0)
+        if (Input.GetKeyDown(KeyCode.Space) && Balls > 0)
         {
             GameObject newBall = Instantiate(dodgeBall, reticle.transform.position, transform.rotation);
             newBall.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * throwForce);
@@ -66,5 +116,10 @@ public class PlayerMovement : MonoBehaviour
             Balls += 1;
             Destroy(other.transform.parent.gameObject);
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        
     }
 }
