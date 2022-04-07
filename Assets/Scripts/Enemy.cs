@@ -20,8 +20,11 @@ public class Enemy : MonoBehaviour
     {
         if (isOnGround)
         {
-            MoveToPlayer();
-
+            if (PlayerMovement.Instance.Alive)
+            {
+                MoveToPlayer();
+            }
+            
             if (transform.position.y < 1.5f | transform.position.y > 2f)
             {
                 transform.position = new Vector3(transform.position.x, 1.5f, transform.position.z);

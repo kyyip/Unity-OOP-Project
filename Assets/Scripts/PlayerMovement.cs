@@ -9,8 +9,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float moveSpeedMax = 80f;
     [SerializeField] float throwForce = 100f;
     [SerializeField] float rotateSpeedMax = 20f;
+    [SerializeField] int maxBalls = 10;
 
     private int balls = 1;
+    private bool alive = true;
     private float moveSpeed;
     private float rotateSpeed;
 
@@ -25,13 +27,13 @@ public class PlayerMovement : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
+    //ENCAPSULATION
     public int Balls
     {
         get { return balls; }
-        set { if (value >= 0)
+        set { if (value >= 0 & value <= maxBalls)
             {
                 balls = value;
             } 
@@ -70,6 +72,10 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public bool Alive
+    {
+        get { return alive; }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -86,6 +92,8 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+
+    // ABSTRACTION
     private void MovePlayer()
     {
         Vector3 moveVector = new Vector3(0f, 0f, Input.GetAxis("Vertical"));
@@ -120,6 +128,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            Destroy(collision.gameObject);
+            gameObject.SetActive(false);
+            alive = false;
+        }
     }
 }
