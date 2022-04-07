@@ -38,4 +38,9 @@ public class UIManager : MonoBehaviour
     {
         SceneManager.LoadScene(0);
     }
+
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene(1);
+    }
 }
